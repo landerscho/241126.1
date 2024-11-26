@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 100
+
+bool relation[MAX][MAX];
+int n; // 집합의 원소 개수
+
+// 반사 관계를 확인하는 함수
+bool isReflexive() {
+for (int i = 0; i < n; i++) {
+if (!relation[i][i]) {
+return false;
+}
+}
+return true;
+}
+
+// 대칭 관계를 확인하는 함수
+bool isSymmetric() {
+for (int i = 0; i < n; i++) {
+for (int j = 0; j < n; j++) {
+if (relation[i][j] && !relation[j][i]) {
+return false;
+}
+}
+}
+return true;
+}
+
+// 추이 관계를 확인하는 함수
+bool isTransitive() {
+for (int i = 0; i < n; i++) {
+for (int j = 0; j < n; j++) {
+if (relation[i][j]) {
+for (int k = 0; k < n; k++) {
+if (relation[j][k] && !relation[i][k]) {
+return false;
+}
+}
+}
+}
+}
+return true;
+}
+
+int main() {
+int pairs;
+printf("집합의 원소 개수를 입력하세요: ");
+scanf("%d", &n);
+
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+        relation[i][j] = false;
+    }
+}
+
+printf("관계 쌍의 개수를 입력하세요: ");
+scanf("%d", &pairs);
+
+printf("관계 쌍을 입력하세요 (예: a b):\n");
+for (int i = 0; i < pairs; i++) {
+    int a, b;
+    scanf("%d %d", &a, &b);
+    relation[a][b] = true;
+}
+
+if ((isReflexive() || isSymmetric()) && isTransitive()) {
+    printf("동치 관계입니다.\n");
+} else {
+    printf("동치 관계가 아닙니다.\n");
+}
+
+return 0;
+}
