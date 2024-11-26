@@ -1,0 +1,39 @@
+#include <stdio.h>
+
+int main() {
+int num_subjects, i;
+double score, total = 0, average;
+
+// 과목 수 입력 받기
+printf("성적 계산기 프로그램\n");
+printf("과목 수를 입력하세요: ");
+scanf("%d", &num_subjects);
+
+// 각 과목에 대한 성적 입력 받기
+for (i = 1; i <= num_subjects; i++) {
+    printf("%d번 과목의 성적을 입력하세요: ", i);
+    scanf("%lf", &score);
+    total += score;  // 각 성적을 total에 더함
+}
+
+// 평균 계산
+average = total / num_subjects;
+
+// 평균 출력
+printf("\n전체 평균: %.2lf\n", average);
+
+// 성적 등급 출력
+if (average >= 90) {
+    printf("성적: A\n");
+} else if (average >= 80) {
+    printf("성적: B\n");
+} else if (average >= 70) {
+    printf("성적: C\n");
+} else if (average >= 60) {
+    printf("성적: D\n");
+} else {
+    printf("성적: F\n");
+}
+
+return 0;
+}
