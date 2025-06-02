@@ -1,0 +1,150 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct image {
+    char header1[100];
+    char header2[100];
+    int w;
+    int h;
+    int maxVal;
+    unsigned char **img;
+} IMAGE;
+
+void imageReverse_ho(IMAGE *a, IMAGE *b);
+void filew(IMAGE , FILE *);
+int menu()
+{
+    int m_id;
+
+   // system("cls");
+
+    do{
+        printf("\t\t\t메뉴를 선택하시오.\n\n");
+        printf("\t\t\t1. IMAGE 좌우반전\n");
+        printf("\t\t\t2. IMAGE 수직반전\n");
+        printf("\t\t\t3. IMAGE 에지 검출\n");
+        printf("\t\t\t4. IMAGE 밝기 조절\n");
+        printf("\t\t\t5. 프로그램 종료 키\n");
+        scanf("%d", &m_id);
+    }
+    while(m_id < 1 || m_id > 5);
+
+    return m_id;
+}
+
+int main()
+{
+    FILE *fpr, *fpw;
+    int i,j;
+    int thre, num, menu_id;
+    char fname[50], n_fname[50];
+    char fpath[100] = "\"C:\\Program Files\\IrfanView\\i_view32.exe\" ";
+    char n1_fpath[100];
+    char n2_fpath[100];
+    IMAGE in;
+    IMAGE ou;
+
+    printf("원본 파일의 이름 : ");
+    scanf("%s", fname);
+    printf("출력본 파일의 이름 : ");
+    scanf("%s", n_fname);
+
+    strcpy(n1_fpath, fpath);
+    strcat(n1_fpath, fname);
+    // system(n1_fpath);
+
+    fpr = fopen(fname, "r");
+    if(fpr == NULL){
+        printf("원본 파일을 열지 못했습니다.\n");
+        exit(1);
+    }
+    fpw = fopen(n_fname, "w");
+    if(fpw == NULL){
+        printf("출력본 파일을 열지 못했습니다.\n");
+        exit(1);
+    }
+
+    fgets(in.header1, 100, fpr);
+    fgets(in.header2, 100, fpr);
+    fscanf(fpr, "%d", &in.w);
+    fscanf(fpr, "%d", &in.h);
+    fscanf(fpr, "%d", &in.maxVal);
+
+    in.img = (unsigned char **)malloc(in.h*sizeof(unsigned char *));
+    for(i=0; i<in.h; i++)
+        in.img[i] = (unsigned char )malloc(in.wsizeof(unsigned char));
+    if (in.img == NULL){
+        printf("원본 이미지의 동적 메모리 할당을 실패했습니다.\n");
+        exit(1);
+    }
+
+    ou = in;
+    ou.img = (unsigned char **)malloc(ou.h*sizeof(unsigned char *));
+    for(i=0; i<ou.h; i++)
+        ou.img[i] = (unsigned char*)malloc(ou.w*sizeof(unsigned char));
+    if (ou.img == NULL){
+        printf("출력본 이미지의 동적 메모리 할당을 실패했습니다.\n");
+        exit(1);
+    }
+
+    filew(ou, fpw);
+
+    for(i=0; i<in.h; i++){
+        for(j=0; j<in.w; j++)
+            fscanf(fpr, "%d", &in.img[i][j]);
+    }
+
+    menu_id = menu();
+    switch(menu_id)
+    {
+        case 1:
+            imageReverse_ho(&in, &ou);
+            break;
+
+        default:
+            printf("없는 메뉴입니다.\n");
+            break;
+    }
+
+    for(i = 0; i < ou.h; i++){
+        for(j = 0; j < ou.w; j++)
+            fprintf(fpw, "%d\n", ou.img[i][j]);
+    }
+
+    fclose(fpr);
+    fclose(fpw);
+
+    strcpy(n2_fpath, fpath);
+    strcat(n2_fpath, n_fname);
+    // system(n2_fpath);
+
+    for(i = 0; i < in.h; i++)
+        free(in.img[i]);
+    free(in.img);
+
+    for(i = 0; i < ou.h; i++)
+        free(ou.img[i]);
+    free(ou.img);
+
+    return 0;
+}
+
+void imageReverse_ho(IMAGE *a, IMAGE *b)
+{
+     int i,j;
+
+    for(i = 0; i < b->h; i++){
+        for(j = 0; j < b->w; j++){
+            b->img[i][j] = a->img[i][b->w - (j+1)];
+        }
+    }
+}
+
+void filew(IMAGE a, FILE *b)
+{
+    fputs(a.header1, b);
+    fputs(a.header2, b);
+    fprintf(b, "%d %d\n", a.w, a.h);
+    fprintf(b, "%d\n", a.maxVal);
+}
