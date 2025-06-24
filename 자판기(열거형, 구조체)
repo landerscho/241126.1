@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// 열거형: 음료 종류 정의
+typedef enum {
+    COKE = 1,
+    CIDER,
+    WATER,
+    COFFEE
+} DrinkType;
+
+// 구조체: 음료 정보 정의
+typedef struct {
+    DrinkType type;
+    char name[20];
+    int price;
+} Drink;
+
+// 음료 정보 배열 초기화
+void initDrinks(Drink drinks[]) {
+    drinks[0] = (Drink){COKE,   "코카콜라", 1500};
+    drinks[1] = (Drink){CIDE
